@@ -35,5 +35,5 @@ Raven Käpakodu on loomade varjupaiga veebirakendus, mis võimaldab külastajate
 - [ ] Veebivormid sisaldavad kliendipoolset valideerimist
 - [ ] Veebirakendus järgib kursuse jooksul õpitud turvalise programmeerimise põhimõtteid
 - [ ] Lähtekood on korrektselt struktureeritud ja loetav
-- [ ] Projekt on hallatud Gitiga ja üles laaditud GitHubi
+- [x] Projekt on hallatud Gitiga ja üles laaditud GitHubi
 - [ ] Projekt sisaldab ajakohast README.md faili
