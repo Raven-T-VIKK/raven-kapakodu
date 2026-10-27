@@ -1,0 +1,9 @@
+# Operatsioonisüsteemi ja redaktori failid
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Hilisemad peatükid: keskkonnaseaded ja üleslaaditud failid
+.env
+uploads/*
+!uploads/.gitkeep
