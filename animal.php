@@ -71,7 +71,7 @@ $row = $result->fetch_assoc();
                     <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                         <li class="nav-item"> <a class="nav-link" href="index.php"><strong>Avaleht</strong></a>
                         </li>
-                        <li class="nav-item"> <a class="nav-link active" href="all_animals.html"><strong>Loomad</strong></a> </li>
+                        <li class="nav-item"> <a class="nav-link active" href="all_animals.php"><strong>Loomad</strong></a> </li>
                         <li class="nav-item"> <a class="nav-link" href="#"><strong>Kuidas aidata</strong></a>
                         </li>
                         <li class="nav-item"> <a class="nav-link" href="#"><strong>Meist</strong></a> </li>
@@ -92,7 +92,7 @@ $row = $result->fetch_assoc();
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php" class="text-decoration-none">Avaleht</a></li>
-                <li class="breadcrumb-item"><a href="all_animals.html" class="text-decoration-none">Loomad</a></li>
+                <li class="breadcrumb-item"><a href="all_animals.php" class="text-decoration-none">Loomad</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($row['nimi']) ?></li>
             </ol>
         </nav>
@@ -149,7 +149,7 @@ $row = $result->fetch_assoc();
                             <a href="contact.html" class="btn btn-success">
                                 <i class="fa-solid fa-heart me-2"></i> Soovin tutvuda
                             </a>
-                            <a href="all_animals.html" class="btn btn-outline-secondary">
+                            <a href="all_animals.php" class="btn btn-outline-secondary">
                                 <i class="fa-solid fa-arrow-left me-2"></i> Tagasi nimekirja
                             </a>
                         </div>
@@ -193,7 +193,7 @@ $row = $result->fetch_assoc();
 
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="index.php" class="text-decoration-none text-dark">Avaleht</a></li>
-                        <li class="mb-2"><a href="all_animals.html" class="text-decoration-none text-dark">Loomad</a></li>
+                        <li class="mb-2"><a href="all_animals.php" class="text-decoration-none text-dark">Loomad</a></li>
                         <li class="mb-2"><a href="#" class="text-decoration-none text-dark">Kuidas aidata</a></li>
                         <li class="mb-2"><a href="#" class="text-decoration-none text-dark">Meist</a></li>
                         <li><a href="contact.html" class="text-decoration-none text-dark">Kontakt</a></li>

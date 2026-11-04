@@ -29,7 +29,7 @@
                     <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                         <li class="nav-item"> <a class="nav-link active" href="index.php"><strong>Avaleht</strong></a>
                         </li>
-                        <li class="nav-item"> <a class="nav-link" href="all_animals.html"><strong>Loomad</strong></a> </li>
+                        <li class="nav-item"> <a class="nav-link" href="all_animals.php"><strong>Loomad</strong></a> </li>
                         <li class="nav-item"> <a class="nav-link" href="#"><strong>Kuidas aidata</strong></a>
                         </li>
                         <li class="nav-item"> <a class="nav-link" href="#"><strong>Meist</strong></a> </li>
@@ -56,7 +56,7 @@
                                 endale uus parim
                                 sõber!</p>
                             <div class="d-flex gap-2">
-                                <a class="btn btn-success p-2 w-100" href="all_animals.html"><i class="fa-solid fa-paw"></i>
+                                <a class="btn btn-success p-2 w-100" href="all_animals.php"><i class="fa-solid fa-paw"></i>
                                     Vaata loomi
                                 </a>
 
@@ -192,7 +192,7 @@
 
 
             <div class="text-center mt-5">
-                <a href="all_animals.html" class="btn btn-success px-5 py-2">
+                <a href="all_animals.php" class="btn btn-success px-5 py-2">
                     Vaata kõiki loomi
                 </a>
             </div>
@@ -233,7 +233,7 @@
 
                         <ul class="list-unstyled">
                             <li class="mb-2"><a href="index.php" class="text-decoration-none text-dark">Avaleht</a></li>
-                            <li class="mb-2"><a href="all_animals.html" class="text-decoration-none text-dark">Loomad</a></li>
+                            <li class="mb-2"><a href="all_animals.php" class="text-decoration-none text-dark">Loomad</a></li>
                             <li class="mb-2"><a href="#" class="text-decoration-none text-dark">Kuidas aidata</a></li>
                             <li class="mb-2"><a href="#" class="text-decoration-none text-dark">Meist</a></li>
                             <li><a href="contact.html" class="text-decoration-none text-dark">Kontakt</a></li>
