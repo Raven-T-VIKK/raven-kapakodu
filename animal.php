@@ -1,3 +1,46 @@
+<?php
+require_once('includes/config.php');
+
+// Kontrollime, kas ID on olemas ja on kehtiv täisarv
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+if ($id === null || $id === false) {
+    header("Location: index.php");
+    exit;
+}
+
+// Loome SQL-päringu, et leida loom vastavalt ID-le
+$sql = "
+    SELECT
+        loomad.*,
+        liigid.nimetus AS liik,
+        toud.nimetus AS toug
+    FROM loomad
+    LEFT JOIN liigid ON loomad.liik_id = liigid.id
+    LEFT JOIN toud ON loomad.toug_id = toud.id
+    WHERE loomad.id = ?
+";
+
+// Valmistame ette päringu
+$stmt = $conn->prepare($sql);
+if ($stmt === false) {
+    die("Päringu ettevalmistamine ebaõnnestus: " . $conn->error);
+}
+
+// Seome parameetri päringuga ja käivitame
+$stmt->bind_param("i", $id);
+if ($stmt->execute() === false) {
+    die("Päringu täitmine ebaõnnestus: " . $stmt->error);
+}
+
+// Saame tulemuse
+$result = $stmt->get_result();
+if ($result->num_rows === 0) {
+    header("Location: index.php");
+    exit;
+}
+
+$row = $result->fetch_assoc();
+?>
 <!doctype html>
 <html lang="et">
 
@@ -5,7 +48,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="assets/css/style.css">
-    <title>Raven Käpakodu</title>
+    <title><?= htmlspecialchars($row['nimi']) ?> – Raven Käpakodu</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
@@ -16,7 +59,7 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="index.php">
                     <img src="assets/images/logo_big.svg" alt="Logo" width="140">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -26,7 +69,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                        <li class="nav-item"> <a class="nav-link" href="index.html"><strong>Avaleht</strong></a>
+                        <li class="nav-item"> <a class="nav-link" href="index.php"><strong>Avaleht</strong></a>
                         </li>
                         <li class="nav-item"> <a class="nav-link active" href="all_animals.html"><strong>Loomad</strong></a> </li>
                         <li class="nav-item"> <a class="nav-link" href="#"><strong>Kuidas aidata</strong></a>
@@ -48,9 +91,9 @@
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html" class="text-decoration-none">Avaleht</a></li>
+                <li class="breadcrumb-item"><a href="index.php" class="text-decoration-none">Avaleht</a></li>
                 <li class="breadcrumb-item"><a href="all_animals.html" class="text-decoration-none">Loomad</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Rex</li>
+                <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($row['nimi']) ?></li>
             </ol>
         </nav>
 
@@ -58,32 +101,53 @@
             <div class="card-body p-4">
                 <div class="row g-4">
                     <div class="col-md-5">
-                        <img src="assets/images/rex.png" class="img-fluid rounded" alt="Rex">
+                        <img src="assets/images/<?= htmlspecialchars($row['pilt']) ?>" class="img-fluid rounded" alt="<?= htmlspecialchars($row['nimi']) ?>">
                     </div>
                     <div class="col-md-7">
-                        <h1 class="fw-bold">Rex</h1>
+                        <h1 class="fw-bold"><?= htmlspecialchars($row['nimi']) ?></h1>
                         <div class="d-flex flex-wrap gap-3 small text-muted mb-3">
-                            <span><i class="fa-solid fa-paw text-success me-1"></i> Koer</span>
-                            <span><i class="fa-solid fa-mars text-success me-1"></i> Isane</span>
-                            <span><i class="fa-regular fa-calendar text-success me-1"></i> 2 aastat</span>
+                            <span><i class="fa-solid fa-paw text-success me-1"></i> <?= htmlspecialchars($row['liik']) ?></span>
+                            <span><i class="fa-solid fa-mars text-success me-1"></i> <?= htmlspecialchars($row['sugu']) ?></span>
+                            <span><i class="fa-regular fa-calendar text-success me-1"></i> <?= $row['vanus'] ?> a</span>
                         </div>
                         <p>
-                            Rex on sõbralik, energiline ja väga inimsõbralik koer. Ta armastab jalutuskäike,
-                            mängimist ja seltskonda. Rex sobib hästi aktiivsele perele.
+                            <?= htmlspecialchars($row['kirjeldus']) ?>
                         </p>
                         <table class="table table-sm mb-4">
                             <tbody>
-                                <tr><th scope="row" class="w-25">Suurus</th><td>Keskmine (15–25 kg)</td></tr>
-                                <tr><th scope="row">Värvus</th><td>Pruun, must</td></tr>
-                                <tr><th scope="row">Sünniaeg</th><td>01.05.2022</td></tr>
-                                <tr><th scope="row">Asukoht</th><td>Tallinn</td></tr>
-                                <tr><th scope="row">Kastreeritud</th><td>Jah</td></tr>
-                                <tr><th scope="row">Kiibistatud</th><td>Jah</td></tr>
+                                <tr>
+                                    <th scope="row" class="w-25">Tõug</th>
+                                    <td><?= htmlspecialchars($row['toug'] ?? '–') ?></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Suurus</th>
+                                    <td><?= htmlspecialchars($row['suurus'] ?? '–') ?></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Värvus</th>
+                                    <td><?= htmlspecialchars($row['varvus'] ?? '–') ?></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Sünniaeg</th>
+                                    <td><?= htmlspecialchars($row['sunnikuupaev'] ?? '–') ?></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Asukoht</th>
+                                    <td><?= htmlspecialchars($row['asukoht'] ?? '–') ?></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Steriliseeritud</th>
+                                    <td><?= $row['steriliseeritud'] == 1 ? 'Jah' : 'Ei' ?></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Kiibistatud</th>
+                                    <td><?= $row['kiibistatud'] == 1 ? 'Jah' : 'Ei' ?></td>
+                                </tr>
                             </tbody>
                         </table>
                         <div class="d-flex flex-wrap gap-2">
                             <a href="contact.html" class="btn btn-success">
-                                <i class="fa-solid fa-heart me-2"></i> Soovin Rexiga tutvuda
+                                <i class="fa-solid fa-heart me-2"></i> Soovin tutvuda
                             </a>
                             <a href="all_animals.html" class="btn btn-outline-secondary">
                                 <i class="fa-solid fa-arrow-left me-2"></i> Tagasi nimekirja
@@ -128,7 +192,7 @@
                     <p class="h5 fw-bold mb-3">Kiirlingid</p>
 
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="index.html" class="text-decoration-none text-dark">Avaleht</a></li>
+                        <li class="mb-2"><a href="index.php" class="text-decoration-none text-dark">Avaleht</a></li>
                         <li class="mb-2"><a href="all_animals.html" class="text-decoration-none text-dark">Loomad</a></li>
                         <li class="mb-2"><a href="#" class="text-decoration-none text-dark">Kuidas aidata</a></li>
                         <li class="mb-2"><a href="#" class="text-decoration-none text-dark">Meist</a></li>
@@ -174,7 +238,7 @@
     </footer>
     <!-- Footer end -->
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 </body>

@@ -1,3 +1,4 @@
+<?php require_once('includes/config.php'); ?>
 <!doctype html>
 <html lang="et">
 
@@ -16,7 +17,7 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="index.php">
                     <img src="assets/images/logo_big.svg" alt="Logo" width="140">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -26,7 +27,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                        <li class="nav-item"> <a class="nav-link active" href="index.html"><strong>Avaleht</strong></a>
+                        <li class="nav-item"> <a class="nav-link active" href="index.php"><strong>Avaleht</strong></a>
                         </li>
                         <li class="nav-item"> <a class="nav-link" href="all_animals.html"><strong>Loomad</strong></a> </li>
                         <li class="nav-item"> <a class="nav-link" href="#"><strong>Kuidas aidata</strong></a>
@@ -155,72 +156,38 @@
 
 
             <div class="row g-4">
-            <div class="col-sm-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="assets/images/rex.png" class="card-img-top" alt="Rex">
-                    <div class="card-body d-flex flex-column">
-                        <h2 class="h5 card-title fw-bold">Rex</h2>
-                        <p class="small text-muted mb-2">Koer • Isane • 2 a</p>
-                        <p class="card-text small">Sõbralik ja energiline poiss, kes armastab jalutuskäike ja inimesi.</p>
-                        <a href="animal.html" class="btn btn-outline-success btn-sm w-100 mt-auto">Vaata lähemalt</a>
+                <!-- single animal -->
+                <?php
+                $sql = "SELECT loomad.*, liigid.nimetus AS liik
+                        FROM loomad
+                        LEFT JOIN liigid ON loomad.liik_id = liigid.id
+                        ORDER BY loomad.id DESC
+                        LIMIT 4";
+                $result = $conn->query($sql);
+
+                if (!$result) {
+                    die("Päring ebaõnnestus: " . $conn->error);
+                }
+
+                while ($row = $result->fetch_assoc()) {
+                ?>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0">
+                            <img src="assets/images/<?= htmlspecialchars($row['pilt']) ?>" class="card-img-top" alt="<?= htmlspecialchars($row['nimi']) ?>">
+                            <div class="card-body d-flex flex-column">
+                                <h2 class="h5 card-title fw-bold"><?= htmlspecialchars($row['nimi']) ?></h2>
+                                <p class="small text-muted mb-2">
+                                    <?= htmlspecialchars($row['liik']) ?> • <?= htmlspecialchars($row['sugu']) ?> • <?= $row['vanus'] ?> a
+                                </p>
+                                <p class="card-text small"><?= htmlspecialchars($row['luhikirjeldus']) ?></p>
+                                <a href="animal.php?id=<?= $row['id'] ?>" class="btn btn-outline-success btn-sm w-100 mt-auto">Vaata lähemalt</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="assets/images/mimi.png" class="card-img-top" alt="Mimi">
-                    <div class="card-body d-flex flex-column">
-                        <h2 class="h5 card-title fw-bold">Mimi</h2>
-                        <p class="small text-muted mb-2">Kass • Emane • 6 k</p>
-                        <p class="card-text small">Väike nurrumootor, kes otsib oma igavest kodu.</p>
-                        <a href="animal.html" class="btn btn-outline-success btn-sm w-100 mt-auto">Vaata lähemalt</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="assets/images/musti.png" class="card-img-top" alt="Musti">
-                    <div class="card-body d-flex flex-column">
-                        <h2 class="h5 card-title fw-bold">Musti</h2>
-                        <p class="small text-muted mb-2">Koer • Isane • 3 a</p>
-                        <p class="card-text small">Rahulik ja ustav kaaslane, kes naudib inimeste seltskonda.</p>
-                        <a href="animal.html" class="btn btn-outline-success btn-sm w-100 mt-auto">Vaata lähemalt</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="assets/images/triibik.png" class="card-img-top" alt="Triibik">
-                    <div class="card-body d-flex flex-column">
-                        <h2 class="h5 card-title fw-bold">Triibik</h2>
-                        <p class="small text-muted mb-2">Kass • Isane • 1 a</p>
-                        <p class="card-text small">Mänguhimuline ja uudishimulik kassipoiss, kes ootab sind.</p>
-                        <a href="animal.html" class="btn btn-outline-success btn-sm w-100 mt-auto">Vaata lähemalt</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="assets/images/rex.png" class="card-img-top" alt="Bruno">
-                    <div class="card-body d-flex flex-column">
-                        <h2 class="h5 card-title fw-bold">Bruno</h2>
-                        <p class="small text-muted mb-2">Koer • Isane • 5 a</p>
-                        <p class="card-text small">Rõõmsameelne koer, kes armastab pikki jalutuskäike.</p>
-                        <a href="animal.html" class="btn btn-outline-success btn-sm w-100 mt-auto">Vaata lähemalt</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="assets/images/mimi.png" class="card-img-top" alt="Miisu">
-                    <div class="card-body d-flex flex-column">
-                        <h2 class="h5 card-title fw-bold">Miisu</h2>
-                        <p class="small text-muted mb-2">Kass • Emane • 4 a</p>
-                        <p class="card-text small">Rahulik kass, kes naudib vaikust ja pehmeid pesasid.</p>
-                        <a href="animal.html" class="btn btn-outline-success btn-sm w-100 mt-auto">Vaata lähemalt</a>
-                    </div>
-                </div>
-            </div>
+                <?php
+                }
+                ?>
+                <!-- single animal end -->
             </div>
 
 
@@ -265,7 +232,7 @@
                         <p class="h5 fw-bold mb-3">Kiirlingid</p>
 
                         <ul class="list-unstyled">
-                            <li class="mb-2"><a href="index.html" class="text-decoration-none text-dark">Avaleht</a></li>
+                            <li class="mb-2"><a href="index.php" class="text-decoration-none text-dark">Avaleht</a></li>
                             <li class="mb-2"><a href="all_animals.html" class="text-decoration-none text-dark">Loomad</a></li>
                             <li class="mb-2"><a href="#" class="text-decoration-none text-dark">Kuidas aidata</a></li>
                             <li class="mb-2"><a href="#" class="text-decoration-none text-dark">Meist</a></li>
