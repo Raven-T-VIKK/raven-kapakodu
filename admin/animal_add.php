@@ -1,42 +1,8 @@
-<!DOCTYPE html>
-<html lang="et">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administraator – Lisa uus loom</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-
-<body>
-
-    <!-- Admin nav -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="index.php"><img src="../assets/images/logo_big.svg" alt="Loomade Varjupaik" height="50"></a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminMenu"
-                aria-controls="adminMenu" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-
-            <div class="collapse navbar-collapse" id="adminMenu">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.php"><i class="fa-solid fa-house me-1"></i> Avaleht</a></li>
-                    <li class="nav-item"><a class="nav-link" href="animals.html"><i class="fa-solid fa-paw me-1"></i> Loomad</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="animal_add.html"><i class="fa-solid fa-plus me-1"></i> Lisa loom</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-tags me-1"></i> Kategooriad</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-users me-1"></i> Kasutajad</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa-regular fa-envelope me-1"></i> Päringud</a></li>
-                </ul>
-
-                <span class="navbar-text me-3"><i class="fa-solid fa-user-shield text-success me-1"></i> Admin</span>
-                <a href="../login.html" class="btn btn-outline-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Logi välja</a>
-            </div>
-        </div>
-    </nav>
-    <!-- Admin nav end -->
+<?php
+require_once('includes/config.php');
+$pageTitle = 'Administraator – Lisa uus loom';
+require_once('includes/header.php');
+?>
 
 <!-- Add animal form -->
     <main class="py-5">
@@ -51,7 +17,7 @@
                     </p>
                 </div>
 
-                <a href="animals.html" class="btn btn-outline-secondary">
+                <a href="animals.php" class="btn btn-outline-secondary">
                     <i class="fa-solid fa-arrow-left me-2"></i>
                     Tagasi loomade juurde
                 </a>
@@ -266,7 +232,7 @@
                                     Salvesta loom
                                 </button>
 
-                                <a href="animals.html" class="btn btn-outline-secondary w-100">
+                                <a href="animals.php" class="btn btn-outline-secondary w-100">
                                     Tühista
                                 </a>
                             </div>
@@ -278,9 +244,4 @@
     </main>
     <!-- Add animal form end -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
-</body>
-
-</html>
+<?php require_once('includes/footer.php'); ?>
