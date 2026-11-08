@@ -1,5 +1,66 @@
 <?php
 require_once 'includes/config.php';
+
+$vead = [];
+
+$nimi  = '';
+$email = '';
+$teema = '';
+$sonum = '';
+
+$lubatud_teemad = ['Looma adopteerimine', 'Vabatahtlik töö', 'Annetamine', 'Üldine küsimus'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Vormi andmete lugemine
+    $nimi  = trim($_POST['nimi'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $teema = trim($_POST['teema'] ?? '');
+    $sonum = trim($_POST['sonum'] ?? '');
+
+    // Andmete kontrollimine
+    if (empty($nimi)) {
+        $vead[] = 'Sisesta nimi.';
+    }
+
+    if (empty($email)) {
+        $vead[] = 'Sisesta e-posti aadress.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $vead[] = 'Sisesta korrektne e-posti aadress.';
+    }
+
+    if (empty($teema) || !in_array($teema, $lubatud_teemad, true)) {
+        $vead[] = 'Vali teema.';
+    }
+
+    if (empty($sonum)) {
+        $vead[] = 'Kirjuta sõnum.';
+    }
+
+    // Salvestamine andmebaasi
+    if (empty($vead)) {
+
+        $sql = "INSERT INTO paringud
+                (loom_id, nimi, email, teema, sonum, staatus)
+                VALUES (NULL, ?, ?, ?, ?, 'uus')";
+
+        $stmt = $conn->prepare($sql);
+        if ($stmt === false) {
+            die("Päringu ettevalmistamine ebaõnnestus: " . $conn->error);
+        }
+
+        $stmt->bind_param("ssss", $nimi, $email, $teema, $sonum);
+
+        if ($stmt->execute()) {
+            header("Location: contact.php?saadetud=1");
+            exit;
+        }
+
+        $vead[] = 'Sõnumi salvestamine ebaõnnestus. Proovi hiljem uuesti.';
+        $stmt->close();
+    }
+}
+
 $pageTitle = 'Kontakt – Raven Käpakodu';
 require_once 'includes/header.php';
 ?>
@@ -100,7 +161,23 @@ require_once 'includes/header.php';
 
                     <h2 class="fw-bold mb-4">Kirjuta meile</h2>
 
-                    <form action="#">
+                    <?php if (!empty($vead)) { ?>
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                <?php foreach ($vead as $viga) { ?>
+                                    <li><?= htmlspecialchars($viga) ?></li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    <?php } ?>
+
+                    <?php if (isset($_GET['saadetud'])) { ?>
+                        <div class="alert alert-success">
+                            Sõnum saadeti edukalt.
+                        </div>
+                    <?php } ?>
+
+                    <form action="contact.php" method="post">
 
                         <div class="row mb-3">
 
@@ -109,7 +186,8 @@ require_once 'includes/header.php';
                                     Sinu nimi
                                 </label>
 
-                                <input type="text" class="form-control" id="name" placeholder="Sinu nimi">
+                                <input type="text" class="form-control" id="name" name="nimi" maxlength="100"
+                                    placeholder="Sinu nimi" value="<?= htmlspecialchars($nimi) ?>" required>
                             </div>
 
                             <div class="col-md-6">
@@ -117,7 +195,8 @@ require_once 'includes/header.php';
                                     E-post
                                 </label>
 
-                                <input type="email" class="form-control" id="email" placeholder="Sinu e-post">
+                                <input type="email" class="form-control" id="email" name="email" maxlength="100"
+                                    placeholder="Sinu e-post" value="<?= htmlspecialchars($email) ?>" required>
                             </div>
 
                         </div>
@@ -128,12 +207,11 @@ require_once 'includes/header.php';
                                 Teema
                             </label>
 
-                            <select class="form-select" id="subject">
-                                <option selected>Vali teema</option>
-                                <option>Looma adopteerimine</option>
-                                <option>Vabatahtlik töö</option>
-                                <option>Annetamine</option>
-                                <option>Üldine küsimus</option>
+                            <select class="form-select" id="subject" name="teema" required>
+                                <option value="">Vali teema</option>
+                                <?php foreach ($lubatud_teemad as $t) { ?>
+                                    <option <?= $teema === $t ? 'selected' : '' ?>><?= htmlspecialchars($t) ?></option>
+                                <?php } ?>
                             </select>
 
                         </div>
@@ -144,8 +222,8 @@ require_once 'includes/header.php';
                                 Sõnum
                             </label>
 
-                            <textarea class="form-control" id="message" rows="5"
-                                placeholder="Kirjuta oma sõnum siia..."></textarea>
+                            <textarea class="form-control" id="message" name="sonum" rows="5"
+                                placeholder="Kirjuta oma sõnum siia..." required><?= htmlspecialchars($sonum) ?></textarea>
 
                         </div>
 
