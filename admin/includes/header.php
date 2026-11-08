@@ -31,7 +31,7 @@ $pageTitle = $pageTitle ?? 'Administraator';
             <div class="collapse navbar-collapse" id="adminMenu">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link <?= $currentPage === 'index.php' ? 'active' : '' ?>" href="index.php"><i class="fa-solid fa-house me-1"></i> Avaleht</a></li>
-                    <li class="nav-item"><a class="nav-link <?= $currentPage === 'animals.php' ? 'active' : '' ?>" href="animals.php"><i class="fa-solid fa-paw me-1"></i> Loomad</a></li>
+                    <li class="nav-item"><a class="nav-link <?= in_array($currentPage, ['animals.php', 'animal_edit.php'], true) ? 'active' : '' ?>" href="animals.php"><i class="fa-solid fa-paw me-1"></i> Loomad</a></li>
                     <li class="nav-item"><a class="nav-link <?= $currentPage === 'animal_add.php' ? 'active' : '' ?>" href="animal_add.php"><i class="fa-solid fa-plus me-1"></i> Lisa loom</a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-tags me-1"></i> Kategooriad</a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-users me-1"></i> Kasutajad</a></li>

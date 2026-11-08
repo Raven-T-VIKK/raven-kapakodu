@@ -37,6 +37,10 @@ require_once('includes/header.php');
     </div>
 
     <!-- Tagasiside -->
+    <?php if (isset($_GET['updated'])) { ?>
+        <div class="alert alert-success">Looma andmed muudeti edukalt.</div>
+    <?php } ?>
+
     <?php if (isset($_GET['added'])) { ?>
         <div class="alert alert-success">Loom lisati edukalt.</div>
     <?php } ?>
