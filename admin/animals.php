@@ -1,18 +1,49 @@
 <?php
 require_once('includes/config.php');
 
-// Kõik loomad koos liigi nimetusega
+// Mitu looma ühel lehel kuvatakse
+$lehel = 10;
+
+// Lehekülje number aadressirealt (vigane või puuduv väärtus = 1. leht)
+$leht = filter_input(INPUT_GET, 'leht', FILTER_VALIDATE_INT);
+
+if (!$leht || $leht < 1) {
+    $leht = 1;
+}
+
+// Loomade koguarv ja lehekülgede arv
+$sql_kokku = "SELECT COUNT(*) AS kokku FROM loomad";
+$result_kokku = $conn->query($sql_kokku);
+$kokku = (int)$result_kokku->fetch_assoc()['kokku'];
+
+$lehti = max(1, (int)ceil($kokku / $lehel));
+
+// Liiga suur lehe number (nt pärast kustutamist) viiakse viimasele lehele
+if ($leht > $lehti) {
+    $leht = $lehti;
+}
+
+// Millisest kirjest päring alustab
+$algus = ($leht - 1) * $lehel;
+
+// Ühe lehekülje loomad koos liigi nimetusega
 $sql_loomad = "
     SELECT loomad.id, loomad.nimi, loomad.pilt, loomad.sugu, loomad.vanus, loomad.staatus, loomad.lisatud, liigid.nimetus AS liik
     FROM loomad
     LEFT JOIN liigid ON loomad.liik_id = liigid.id
     ORDER BY loomad.id DESC
+    LIMIT ?, ?
 ";
 
-$result_loomad = $conn->query($sql_loomad);
-if (!$result_loomad) {
-    die("Päring ebaõnnestus: " . $conn->error);
-}
+$stmt = $conn->prepare($sql_loomad);
+$stmt->bind_param("ii", $algus, $lehel);
+$stmt->execute();
+
+$result_loomad = $stmt->get_result();
+
+// Kuvatavate kirjete vahemik tabeli aluse teksti jaoks
+$esimene = $kokku > 0 ? $algus + 1 : 0;
+$viimane = min($algus + $lehel, $kokku);
 
 $pageTitle = 'Administraator – Loomad';
 require_once('includes/header.php');
@@ -119,10 +150,22 @@ require_once('includes/header.php');
 
         </div>
 
-        <div class="card-footer bg-white">
+        <div class="card-footer bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
             <small class="text-muted">
-                Kokku <?= $result_loomad->num_rows ?> looma.
+                Kuvatakse <?= $esimene ?>–<?= $viimane ?> kokku <?= $kokku ?> loomast.
             </small>
+
+            <?php if ($lehti > 1) { ?>
+                <nav aria-label="Loomade leheküljed">
+                    <ul class="pagination pagination-sm mb-0">
+                        <?php for ($i = 1; $i <= $lehti; $i++) { ?>
+                            <li class="page-item <?= $i === $leht ? 'active' : '' ?>">
+                                <a class="page-link" href="animals.php?leht=<?= $i ?>"><?= $i ?></a>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                </nav>
+            <?php } ?>
         </div>
     </div>
 </div>
