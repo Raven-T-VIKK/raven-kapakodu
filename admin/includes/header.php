@@ -1,4 +1,14 @@
 <?php
+// Sessioon ja sisselogimise kontroll (kaitseb kõiki admin-lehti, mis seda päist kasutavad)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['kasutaja'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
 // Praegune leht aktiivse menüüpunkti märkimiseks
 $currentPage = basename($_SERVER['PHP_SELF']);
 
@@ -38,7 +48,7 @@ $pageTitle = $pageTitle ?? 'Administraator';
                     <li class="nav-item"><a class="nav-link" href="#"><i class="fa-regular fa-envelope me-1"></i> Päringud</a></li>
                 </ul>
 
-                <span class="navbar-text me-3"><i class="fa-solid fa-user-shield text-success me-1"></i> Admin</span>
+                <span class="navbar-text me-3"><i class="fa-solid fa-user-shield text-success me-1"></i> Tere, <?= htmlspecialchars($_SESSION['kasutaja']['nimi']) ?>!</span>
                 <a href="logout.php" class="btn btn-outline-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Logi välja</a>
             </div>
         </div>
