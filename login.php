@@ -5,6 +5,9 @@ require_once 'includes/config.php';
 
 $viga = '';
 
+// E-post küpsisest (kui kasutaja on varem "Jäta mind meelde" märkinud)
+$email = $_COOKIE['remember_email'] ?? '';
+
 // Kas vorm on saadetud (POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -30,6 +33,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'nimi' => $tootaja['nimi'],
             'roll' => $tootaja['roll']
         ];
+
+        // Jäta mind meelde: salvesta ainult e-post küpsisesse (30 päeva). Parooli ei salvestata kunagi.
+        if (!empty($_POST['remember'])) {
+            setcookie('remember_email', $email, [
+                'expires'  => time() + (60 * 60 * 24 * 30),
+                'path'     => '/',
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
+        } else {
+            // Kustuta vana küpsis (aeg minevikus)
+            setcookie('remember_email', '', [
+                'expires'  => time() - 3600,
+                'path'     => '/',
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
+        }
 
         header('Location: admin/index.php');
         exit;
@@ -77,7 +98,7 @@ require_once 'includes/header.php';
                                 </span>
 
                                 <input type="email" class="form-control" id="loginEmail" name="email" placeholder="Sinu e-post"
-                                    value="<?= htmlspecialchars($email ?? '') ?>" required>
+                                    value="<?= htmlspecialchars($email) ?>" required>
                             </div>
                         </div>
 
@@ -102,7 +123,8 @@ require_once 'includes/header.php';
                         <div class="d-flex justify-content-between align-items-center mb-4">
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="remember">
+                                <input class="form-check-input" type="checkbox" id="remember" name="remember"
+                                    <?= !empty($_COOKIE['remember_email']) ? 'checked' : '' ?>>
 
                                 <label class="form-check-label" for="remember">
                                     Jäta mind meelde
