@@ -1,5 +1,43 @@
 <?php
+session_start();
+
 require_once 'includes/config.php';
+
+$viga = '';
+
+// Kas vorm on saadetud (POST)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Võta kasutaja sisestatud e-post ja parool
+    $email = trim($_POST['email'] ?? '');
+    $parool = $_POST['parool'] ?? '';
+
+    // Otsi töötaja e-posti järgi
+    $stmt = $conn->prepare("SELECT id, nimi, email, parool, roll FROM tootajad WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $tootaja = $result->fetch_assoc();
+
+    // Kontrolli parooli räsi vastu
+    if ($tootaja && password_verify($parool, $tootaja['parool'])) {
+        // Uus sessiooni ID kaitseks sessiooni kinnipanemise vastu
+        session_regenerate_id(true);
+
+        // Salvesta kasutaja andmed sessiooni
+        $_SESSION['kasutaja'] = [
+            'id' => $tootaja['id'],
+            'nimi' => $tootaja['nimi'],
+            'roll' => $tootaja['roll']
+        ];
+
+        header('Location: admin/index.php');
+        exit;
+    } else {
+        $viga = 'Vale e-posti aadress või parool.';
+    }
+}
+
 $pageTitle = 'Logi sisse – Raven Käpakodu';
 require_once 'includes/header.php';
 ?>
@@ -20,7 +58,13 @@ require_once 'includes/header.php';
                         </p>
                     </div>
 
-                    <form action="admin/index.php">
+                    <?php if (!empty($viga)) { ?>
+                        <div class="alert alert-danger">
+                            <?= htmlspecialchars($viga) ?>
+                        </div>
+                    <?php } ?>
+
+                    <form method="post">
 
                         <div class="mb-3">
                             <label for="loginEmail" class="form-label fw-semibold">
@@ -32,7 +76,8 @@ require_once 'includes/header.php';
                                     <i class="fa-regular fa-envelope"></i>
                                 </span>
 
-                                <input type="email" class="form-control" id="loginEmail" placeholder="Sinu e-post">
+                                <input type="email" class="form-control" id="loginEmail" name="email" placeholder="Sinu e-post"
+                                    value="<?= htmlspecialchars($email ?? '') ?>" required>
                             </div>
                         </div>
 
@@ -46,7 +91,7 @@ require_once 'includes/header.php';
                                     <i class="fa-solid fa-lock"></i>
                                 </span>
 
-                                <input type="password" class="form-control" id="loginPassword" placeholder="Sinu parool">
+                                <input type="password" class="form-control" id="loginPassword" name="parool" placeholder="Sinu parool" required>
 
                                 <button class="btn btn-outline-secondary" type="button" aria-label="Näita parooli">
                                     <i class="fa-regular fa-eye"></i>

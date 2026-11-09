@@ -39,7 +39,7 @@ $pageTitle = $pageTitle ?? 'Administraator';
                 </ul>
 
                 <span class="navbar-text me-3"><i class="fa-solid fa-user-shield text-success me-1"></i> Admin</span>
-                <a href="../login.php" class="btn btn-outline-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Logi välja</a>
+                <a href="logout.php" class="btn btn-outline-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Logi välja</a>
             </div>
         </div>
     </nav>
